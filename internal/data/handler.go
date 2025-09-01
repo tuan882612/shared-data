@@ -25,8 +25,15 @@ func (d *Handler) DataHandler(w http.ResponseWriter, r *http.Request) {
 		})
 	case http.MethodPost:
 		w.WriteHeader(http.StatusCreated)
+		d.storage = append(d.storage, "new data")
 		json.NewEncoder(w).Encode(map[string]string{"message": "added new data"})
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
+}
+
+func (d *Handler) GetHandlerMap() map[string]http.HandlerFunc {
+	handlerMap := make(map[string]http.HandlerFunc)
+	handlerMap["/data"] = d.DataHandler
+	return handlerMap
 }
