@@ -2,34 +2,22 @@ package main
 
 import (
 	"flag"
-	"log/slog"
+	"log"
 	"os"
-	"shareddata/internal/config"
-	"shareddata/internal/data"
-	"shareddata/internal/server"
+)
+
+var (
+	host string
+	port int
 )
 
 func main() {
-	path := flag.String("config-path", "", "Server configuration path")
+	flag.StringVar(&host, "host", "", "Server Host")
+	flag.IntVar(&port, "port", 0, "Server Port")
 	flag.Parse()
 
-	if len(*path) < 1 || path == nil {
-		slog.Error("Path flag is empty")
-		os.Exit(1)
-	}
-
-	conf, err := config.NewConfiguration(*path)
-	if err != nil {
-		os.Exit(1)
-	}
-
-	dataHandler := data.NewDataHandler()
-	svr, err := server.NewServer(&conf.Config.Server, dataHandler.GetHandlerMap())
-	if err != nil {
-		os.Exit(1)
-	}
-
-	if err != svr.Start() {
+	if len(host) < 1 || port < 1 {
+		log.Print("Invalid Host or Port")
 		os.Exit(1)
 	}
 }
